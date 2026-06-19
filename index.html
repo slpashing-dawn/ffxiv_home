@@ -237,7 +237,6 @@
             <div id="ff-gb-write-box" style="display: none; background: rgba(0,0,0,0.04); border: 1px solid var(--ff-light-border); border-radius: 4px; padding: 15px; margin-bottom: 15px;">
                 <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
                     <input type="text" id="gb-input-name" placeholder="닉네임" style="padding: 5px 10px; border: 1px solid #9f8e70; border-radius: 4px; width: 120px; font-family: inherit;">
-                    <input type="password" id="gb-input-pw" placeholder="비밀번호" style="padding: 5px 10px; border: 1px solid #9f8e70; border-radius: 4px; width: 120px; font-family: inherit;">
                     <select id="gb-input-avatar" style="padding: 5px; border: 1px solid #9f8e70; border-radius: 4px; font-family: inherit;">
                         <option value="⚔️">⚔️ 투사</option>
                         <option value="🔮">🔮 마술사</option>
@@ -553,7 +552,6 @@
             // Firestore의 'guestbook' 콜렉션에 데이터 추가
             await addDoc(collection(db, "guestbook"), {
                 name: nameInput.value.trim(),
-                password: pwInput.value, // (추후 삭제 기능 확장용)
                 avatar: avatarInput.value,
                 message: msgInput.value.trim(),
                 createdAt: new Date() // 정렬용 현재 시간
@@ -561,10 +559,9 @@
 
             // 작성 칸 초기화 및 닫기
             nameInput.value = "";
-            pwInput.value = "";
             msgInput.value = "";
             window.toggleWriteForm();
-            alert("방명록이 모그레터를 타고 성공적으로 전달되었습니다쿠포!");
+            alert("방명록이 모그레터를 타고 성공적으로 전달되었습니다!");
 
         } catch (error) {
             console.error("Firebase 저장 에러: ", error);
