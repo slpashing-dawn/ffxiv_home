@@ -138,6 +138,28 @@
         .ff-guestbook-pagination { text-align: center; color: #8c7f76; font-size: 9.5pt; display: flex; justify-content: center; gap: 8px; align-items: center; }
         .ff-btn-pag { background: linear-gradient(180deg, #eae3d8 0%, #cdc2b1 100%); border: 1px solid #7c705c; color: #38312b; padding: 3px 8px; font-size: 8.5pt; font-weight: bold; border-radius: 4px; cursor: pointer; }
 
+        /* [배너 화면 전용 - 메인 배너 및 복사 버튼 액션 레이아웃 추가] */
+        .ff-main-banner-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; }
+        .ff-copy-action-btn { 
+            background: linear-gradient(180deg, #443c37 0%, #292421 100%); 
+            border: 1px solid var(--ff-dark-border); 
+            color: #dfdfdf; 
+            padding: 8px 14px; 
+            font-family: inherit; 
+            font-size: 9pt; 
+            font-weight: bold; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            transition: all 0.15s; 
+            height: 40px; 
+            display: inline-flex; 
+            align-items: center; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .ff-copy-action-btn:hover { border-color: var(--ff-gold); color: var(--ff-gold-bright); background: #38312d; transform: translateY(-1px); }
+        .ff-copy-action-btn:active { transform: translateY(0); }
+        .ff-official-sub-row { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; width: 100%; }
+        
         @keyframes fadeInContent { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes questPop { from { transform: scale(0.93); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
@@ -232,6 +254,28 @@
     </div>
 
     <script>
+        // [★ 복사 액션 제어 엔진 함수 이식]
+        function copyData(type) {
+            const bannerElement = document.getElementById('mainBanner');
+            if (!bannerElement) return;
+            let copyText = "";
+
+            if (type === 'img') {
+                const imgTag = bannerElement.querySelector('img');
+                copyText = imgTag ? imgTag.src : "";
+            } else if (type === 'url') {
+                copyText = bannerElement.href;
+            }
+
+            if (copyText && copyText.trim() !== "") {
+                navigator.clipboard.writeText(copyText).then(function() {
+                    const typeLabel = (type === 'img') ? "📷 배너 이미지 링크" : "🔗 웹페이지 이동 주소";
+                    alert(`[에오르제아 통신망] ${typeLabel} 복사가 완료되었습니다쿠포!`);
+                }).catch(function(err) {
+                    alert("주소 복사에 실패했습니다쿠포. 브라우저 보안 설정을 확인해 주세요.");
+                });
+            }
+        }
         /* =========================================================================
          * [SPA 코어 엔진] 각 화면의 HTML 템플릿 정의 구역
          * ========================================================================= */
@@ -297,29 +341,61 @@
                     </ul>
                 </main>
             `,
-            
-            // 2. 배너 관리 화면: ★ 200*40 제휴 배너 첫 번째 칸에 움짤 및 새창 하이퍼링크 세팅 완료
+            // 2. 배너 관리 화면 템플릿 전면 교체
             banner: `
                 <section class="ff-profile-section">
                     <div class="ff-section-label">✦ ARCHIVE ADVENTURER PROFILES ✦</div>
                     <div class="ff-profile-row">
-                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/150" alt="캐릭터 1"></div>
-                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/150" alt="캐릭터 2"></div>
-                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/150" alt="캐릭터 3"></div>
-                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/150" alt="캐릭터 4"></div>
+                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/85/1b1817/c6a152?text=C1" alt="캐릭터 1"></div>
+                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/85/262220/c6a152?text=C2" alt="캐릭터 2"></div>
+                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/85/141211/c6a152?text=C3" alt="캐릭터 3"></div>
+                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/85/3a322d/c6a152?text=C4" alt="캐릭터 4"></div>
+                    </div>
+                </section>
+
+                <div class="ff-divider"></div>
+
+                <section class="ff-banner-board" style="margin-bottom: 25px;">
+                    <div class="ff-section-label" style="font-size:11pt; text-align:left; margin-bottom:15px;">🌐 OFFICIAL HOMEPAGE BANNERS</div>
+                    
+                    <div class="ff-main-banner-container">
+                        <a href="https://dawnsplash.naru.pub" target="_blank" class="ff-link-banner" id="mainBanner">
+                            <img src="https://dawnsplash.naru.pub/image/dawn_splash%20(1).gif" alt="첫 번째 메인 배너">
+                        </a>
+                        
+                        <button class="ff-copy-action-btn" onclick="copyData('img')">📋 이미지 링크 복사</button>
+                        <button class="ff-copy-action-btn" onclick="copyData('url')">🔗 웹 주소 복사</button>
+                    </div>
+                    
+                    <div class="ff-official-sub-row">
+                        <a href="https://kr.finalfantasyxiv.com/lodestone/" target="_blank" class="ff-link-banner" title="한국 로드스톤">
+                            <img src="https://via.placeholder.com/200x40/2b2521/dfdfdf?text=KR+LODESTONE" alt="공식 배너 2">
+                        </a>
+                        <a href="https://na.finalfantasyxiv.com/lodestone/" target="_blank" class="ff-link-banner" title="글로벌 로드스톤">
+                            <img src="https://via.placeholder.com/200x40/1a1716/dfdfdf?text=GLOBAL+LODESTONE" alt="공식 배너 3">
+                        </a>
+                        <a href="#" class="ff-link-banner" onclick="alert('준비 중인 공식 배너 서판입니다.'); return false;">
+                            <img src="https://via.placeholder.com/200x40/221d1b/dfdfdf?text=OFFICIAL+LINK" alt="공식 배너 4">
+                        </a>
                     </div>
                 </section>
 
                 <div class="ff-divider"></div>
 
                 <section class="ff-banner-board">
-                    <div class="ff-section-label" style="font-size:11pt; text-align:left; margin-bottom:15px;">🤝 ALLIANCE BANNERS (200x40 픽셀)</div>
+                    <div class="ff-section-label" style="font-size:11pt; text-align:left; margin-bottom:15px;">🤝 ALLIANCE & PERSONAL BANNERS</div>
+                    
                     <div class="ff-alliance-grid">
-                        <a href="https://dawnsplash.naru.pub" target="_blank" class="ff-link-banner" title="새벽의 전장으로 이동">
-                            <img src="https://dawnsplash.naru.pub/image/dawn_splash%20(1).gif" alt="Dawn Splash 배너">
+                        <a href="https://notion.so" target="_blank" class="ff-link-banner" title="통합 노션 서고">
+                            <img src="https://via.placeholder.com/200x40/211d1c/c6a152?text=NOTION+ARCHIVE" alt="기타 배너 1">
                         </a>
-                        <a href="https://notion.so" target="_blank" class="ff-link-banner"><img src="https://via.placeholder.com/200x40/0b0909/c6a152?text=Notion+Archive" alt="연동 배너 2"></a>
-                        <a href="https://tistory.com" target="_blank" class="ff-link-banner"><img src="https://via.placeholder.com/200x40/0b0909/c6a152?text=Tistory+Blog" alt="연동 배너 3"></a>
+                        <a href="https://tistory.com" target="_blank" class="ff-link-banner" title="연성 백업 블로그">
+                            <img src="https://via.placeholder.com/200x40/13100f/c6a152?text=BLOG+BACKUP" alt="기타 배너 2">
+                        </a>
+                        <a href="#" class="ff-link-banner" onclick="return false;"><img src="https://via.placeholder.com/200x40/1d1917/8c6f34?text=FRIEND+LINK+A" alt="기타 배너 3"></a>
+                        <a href="#" class="ff-link-banner" onclick="return false;"><img src="https://via.placeholder.com/200x40/12100e/8c6f34?text=FRIEND+LINK+B" alt="기타 배너 4"></a>
+                        <a href="#" class="ff-link-banner" onclick="return false;"><img src="https://via.placeholder.com/200x40/221d1a/8c6f34?text=HOUSING+SHOP" alt="기타 배너 5"></a>
+                        <a href="#" class="ff-link-banner" onclick="return false;"><img src="https://via.placeholder.com/200x40/0d0b0a/8c6f34?text=TWITTER+LINK" alt="기타 배너 6"></a>
                     </div>
                 </section>
             `
