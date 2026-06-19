@@ -590,6 +590,26 @@
             document.getElementById('letterContentTarget').innerHTML = `<p><strong>${letter.title}</strong></p><p>${letter.body}</p><p style="text-align:right;">- ${letter.sender}</p>`;
             openModal('letterModal');
         }
+
+        /* 챗지피티랑 수정한 거 */
+        
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) {
+                console.error(`모달을 찾을 수 없음: ${modalId}`);
+            return;
+            }
+        modal.classList.add('show');
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) {
+                console.error(`모달을 찾을 수 없음: ${modalId}`);
+            return;
+            }
+        modal.classList.remove('show');
+        }
     </script>
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
@@ -624,7 +644,6 @@
     // [B] 데이터베이스로 새 글 작성 및 전송 (보안/정렬용 타임스탬프 포함)
     document.getElementById('btn-save-guestbook').addEventListener('click', async () => {
         const nameInput = document.getElementById('gb-input-name');
-        const pwInput = document.getElementById('gb-input-pw');
         const avatarInput = document.getElementById('gb-input-avatar');
         const msgInput = document.getElementById('gb-input-msg');
 
