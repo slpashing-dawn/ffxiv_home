@@ -231,26 +231,36 @@
             <div class="ff-guestbook-close" onclick="closeModal('guestbookModal')">✕</div>
             <div class="ff-guestbook-header">
                 <h3>📜 Guestbook (방명록)</h3>
-                <button class="ff-btn-write">글쓰기</button>
+                <button class="ff-btn-write" onclick="toggleWriteForm()">✏️ 글쓰기 열기/닫기</button>
             </div>
-            <div class="ff-guestbook-list">
-                <div class="ff-guestbook-item">
-                    <div class="ff-guestbook-avatar">⚔️</div>
-                    <div class="ff-guestbook-body">
-                        <div class="ff-guestbook-meta">
-                            <span class="ff-guestbook-name">림사 모험가</span>
-                            <span class="ff-guestbook-date">2026.06.17 11:21</span>
-                        </div>
-                        <div class="ff-guestbook-msg">방명록 남기고 갑니다. 아카이브 구축이 아주 멋지네요! 이슈가르드 스크린샷 배너가 인상적입니다.</div>
-                    </div>
+
+            <div id="ff-gb-write-box" style="display: none; background: rgba(0,0,0,0.04); border: 1px solid var(--ff-light-border); border-radius: 4px; padding: 15px; margin-bottom: 15px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+                    <input type="text" id="gb-input-name" placeholder="닉네임" style="padding: 5px 10px; border: 1px solid #9f8e70; border-radius: 4px; width: 120px; font-family: inherit;">
+                    <input type="password" id="gb-input-pw" placeholder="비밀번호" style="padding: 5px 10px; border: 1px solid #9f8e70; border-radius: 4px; width: 120px; font-family: inherit;">
+                    <select id="gb-input-avatar" style="padding: 5px; border: 1px solid #9f8e70; border-radius: 4px; font-family: inherit;">
+                        <option value="⚔️">⚔️ 투사</option>
+                        <option value="🔮">🔮 마술사</option>
+                        <option value="🌿">🌿 치유사</option>
+                    </select>
+                </div>
+                <textarea id="gb-input-msg" placeholder="방명록을 남겨주세요! (최대 200자)" rows="3" style="width: 100%; padding: 8px; border: 1px solid #9f8e70; border-radius: 4px; font-family: inherit; resize: none; margin-bottom: 10px;"></textarea>
+                <div style="text-align: right;">
+                    <button class="ff-btn" id="btn-save-guestbook" style="background: #463e39; color: #fff; border: 1px solid #2d2623;">방명록 등록쿠포</button>
                 </div>
             </div>
+
+            <div class="ff-guestbook-list" id="guestbookContainer">
+                <div style="text-align:center; color:#8c7f76; padding:20px;">크리스탈 통신망 연결 중...</div>
+            </div>
+
             <div class="ff-guestbook-pagination">
-                <button class="ff-btn-pag">◀ Prev</button>
+                <button class="ff-btn-pag" onclick="alert('첫 페이지입니다.')">◀ Prev</button>
                 <span>[ 1 / 1 ]</span>
-                <button class="ff-btn-pag">Next ▶</button>
+                <button class="ff-btn-pag" onclick="alert('마지막 페이지입니다.')">Next ▶</button>
             </div>
         </div>
+    </div>
     </div>
 
     <script>
@@ -497,5 +507,116 @@
             openModal('letterModal');
         }
     </script>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+    // ★ Firestore Database 사용을 위한 라이브러리 추가 로드
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+    // 보내주신 Web 앱의 Firebase 설정 값
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-1kwJn029cDMBngPQJ_sMtM88ImcXWNQ",
+        authDomain: "ffxiv-home-visitor-setting.firebaseapp.com",
+        projectId: "ffxiv-home-visitor-setting",
+        storageBucket: "ffxiv-home-visitor-setting.firebasestorage.app",
+        messagingSenderId: "402483927908",
+        appId: "1:402483927908:web:dad331bfcfc973cc4e3871",
+        measurementId: "G-3THBVHST0M"
+    };
+
+    // 초기화
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // [A] 글쓰기 창 토글 함수 (전역 window 객체에 등록하여 HTML에서 버튼 클릭 가능하게 설정)
+    window.toggleWriteForm = function() {
+        const writeBox = document.getElementById('ff-gb-write-box');
+        if (writeBox.style.display === 'none') {
+            writeBox.style.display = 'block';
+        } else {
+            writeBox.style.display = 'none';
+        }
+    }
+
+    // [B] 데이터베이스로 새 글 작성 및 전송 (보안/정렬용 타임스탬프 포함)
+    document.getElementById('btn-save-guestbook').addEventListener('click', async () => {
+        const nameInput = document.getElementById('gb-input-name');
+        const pwInput = document.getElementById('gb-input-pw');
+        const avatarInput = document.getElementById('gb-input-avatar');
+        const msgInput = document.getElementById('gb-input-msg');
+
+        if (!nameInput.value.trim() || !msgInput.value.trim()) {
+            alert("닉네임과 내용을 모두 적어주셔야 합니다쿠포!");
+            return;
+        }
+
+        try {
+            // Firestore의 'guestbook' 콜렉션에 데이터 추가
+            await addDoc(collection(db, "guestbook"), {
+                name: nameInput.value.trim(),
+                password: pwInput.value, // (추후 삭제 기능 확장용)
+                avatar: avatarInput.value,
+                message: msgInput.value.trim(),
+                createdAt: new Date() // 정렬용 현재 시간
+            });
+
+            // 작성 칸 초기화 및 닫기
+            nameInput.value = "";
+            pwInput.value = "";
+            msgInput.value = "";
+            window.toggleWriteForm();
+            alert("방명록이 모그레터를 타고 성공적으로 전달되었습니다쿠포!");
+
+        } catch (error) {
+            console.error("Firebase 저장 에러: ", error);
+            alert("통신 오류가 발생했습니다. 파이어베이스 콘솔에서 Firestore Database가 활성화되었는지 확인해 주세요!");
+        }
+    });
+
+    // [C] 데이터베이스로부터 실시간(onSnapshot) 데이터 가져와서 그리기
+    // 최신 글이 가장 위로 오도록 내림차순(desc) 정렬 쿼리 구성
+    const q = query(collection(db, "guestbook"), orderBy("createdAt", "desc"));
+
+    onSnapshot(q, (snapshot) => {
+        const container = document.getElementById('guestbookContainer');
+        container.innerHTML = ""; // 기존 목록 비우기
+
+        if (snapshot.empty) {
+            container.innerHTML = `<div style="text-align:center; color:#8c7f76; padding:30px;">아직 작성된 방명록이 없습니다쿠포. 첫 발자국을 남겨보세요!</div>`;
+            return;
+        }
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            
+            // 날짜 포맷 예쁘게 변환 (YYYY.MM.DD HH:MM)
+            let dateString = "방금 전";
+            if (data.createdAt) {
+                const date = data.createdAt.toDate();
+                dateString = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            }
+
+            // 아이템 구조 HTML 생성
+            const itemHTML = `
+                <div class="ff-guestbook-item">
+                    <div class="ff-guestbook-avatar">${data.avatar || '⚔️'}</div>
+                    <div class="ff-guestbook-body">
+                        <div class="ff-guestbook-meta">
+                            <span class="ff-guestbook-name">${escapeHtml(data.name)}</span>
+                            <span class="ff-guestbook-date">${dateString}</span>
+                        </div>
+                        <div class="ff-guestbook-msg">${escapeHtml(data.message)}</div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += itemHTML;
+        });
+    });
+
+    // XSS 방지용 보안 텍스트 변환기
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+</script>
 </body>
 </html>
