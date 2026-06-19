@@ -30,60 +30,63 @@
         .ff-side-menu .ff-menu-btn:hover { color: #ffffff; background: linear-gradient(90deg, #3d3531 0%, transparent 100%); border-left: 3px solid var(--ff-gold); padding-left: 15px; }
         .ff-side-menu .ff-menu-btn.active { color: var(--ff-gold-bright); background: rgba(198, 161, 82, 0.08); border-left: 3px solid var(--ff-gold-bright); }
 
-        /* [2] 메인 레이아웃 및 본문 컨테이너 */
+        /* [2] 메인 레이아웃 및 본문 */
         .ff-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 40px 0 100px; }
-        .ff-page-header { margin-bottom: 35px; }
+        .ff-page-header { margin-bottom: 25px; }
         .ff-archive-title { color: var(--ff-gold); font-size: 16pt; border-bottom: 2px solid var(--ff-dark-border); padding-bottom: 10px; margin: 0; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; }
         
         #ff-dynamic-container { animation: fadeInContent 0.35s ease-out; }
 
-        /* [3] ★ 손그림 정통 양식 홈 레이아웃 (2단 분할 구조) */
-        .ff-home-layout { display: flex; gap: 30px; align-items: flex-start; }
+        /* [3] 인터랙티브 슬라이드 배너 레이아웃 */
+        .ff-slider-container { position: relative; width: 100%; height: 380px; background-color: #1b1817; border: 2px solid var(--ff-dark-border); border-radius: 6px; margin-bottom: 30px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .ff-slider-wrapper { display: flex; width: 100%; height: 100%; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .ff-slide { min-width: 100%; height: 100%; position: relative; }
         
-        /* 좌측 종방향 콘텐츠 영역 */
-        .ff-home-main-cols { flex: 1; display: flex; gap: 20px; }
-        .ff-vertical-board { flex: 1; background: #1b1817; border: 2px solid var(--ff-dark-border); border-radius: 6px; padding: 22px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: flex; flex-direction: column; gap: 18px; }
+        /* 배너 마우스 호버 링크 연결 및 스타일 효과 */
+        .ff-slide-link { display: block; width: 100%; height: 100%; text-decoration: none; position: relative; overflow: hidden; }
+        .ff-slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.3s ease, opacity 0.3s ease; }
+        .ff-slide-link:hover img { transform: scale(1.02); opacity: 0.95; }
         
-        .ff-board-title { color: var(--ff-gold); font-size: 11.5pt; border-bottom: 1px solid var(--ff-dark-border); padding-bottom: 8px; margin: 0; font-weight: bold; letter-spacing: 0.5px; }
+        .ff-banner-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(0deg, rgba(13,11,10,0.95) 0%, rgba(13,11,10,0.4) 70%, transparent 100%); padding: 30px 40px; pointer-events: none; }
+        .ff-banner-caption-main { color: var(--ff-gold-bright); font-size: 15pt; font-weight: bold; margin: 0 0 5px 0; text-shadow: 1px 1px 3px #000; }
+        .ff-banner-caption-sub { color: #a89e94; font-size: 10pt; margin: 0; }
         
-        /* 종방향 배치 슬롯 */
-        .ff-long-slot { width: 100%; aspect-ratio: 4/3; background: #0e0c0b; border: 1px solid var(--ff-dark-border); border-radius: 4px; overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
-        .ff-long-slot img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; transition: all 0.2s; }
-        .ff-long-slot:hover img { opacity: 1; transform: scale(1.03); }
-        .ff-long-slot:hover { border-color: var(--ff-gold); }
+        .ff-slider-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: linear-gradient(180deg, rgba(83,74,68,0.8) 0%, rgba(49,43,40,0.8) 100%); border: 1px solid #1a1716; outline: 1px solid #6b5f56; color: #e2dcd6; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12pt; z-index: 5; transition: all 0.1s; }
+        .ff-slider-arrow:hover { outline-color: var(--ff-gold); color: #fff; }
+        .ff-arrow-prev { left: 15px; }
+        .ff-arrow-next { right: 15px; }
+        .ff-slider-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 5; }
+        .ff-dot { width: 8px; height: 8px; background: rgba(115, 102, 92, 0.6); border-radius: 50%; cursor: pointer; transition: all 0.2s; }
+        .ff-dot.active { background: var(--ff-gold-bright); box-shadow: 0 0 6px var(--ff-gold-bright); transform: scale(1.1); }
 
-        /* 우측 공지사항 횡방향 서판 */
-        .ff-home-side-panel { width: 320px; background: #1b1817; border: 2px solid var(--ff-dark-border); border-radius: 6px; padding: 22px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+        /* [4] 하부 업데이트 알림판 레이아웃 */
+        .ff-dashboard-card { background: #1b1817; border: 2px solid var(--ff-dark-border); border-radius: 6px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+        .ff-card-title { color: var(--ff-gold); font-size: 12pt; border-bottom: 1px solid var(--ff-dark-border); padding-bottom: 10px; margin-top: 0; margin-bottom: 15px; font-weight: bold; }
         .ff-notice-list { list-style: none; padding: 0; margin: 0; }
-        .ff-notice-list li { padding: 10px 5px; border-bottom: 1px dashed #2d2623; font-size: 10pt; display: flex; justify-content: space-between; cursor: pointer; }
-        .ff-notice-list li:hover { color: var(--ff-gold-bright); background: rgba(255,255,255,0.01); }
-        .ff-notice-date { color: #736960; margin-left: 10px; flex-shrink: 0; }
+        .ff-notice-list li { padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; font-size: 10.5pt; }
+        .ff-notice-list li:last-child { border-bottom: none; }
+        .ff-notice-link { color: #c8beab; text-decoration: none; transition: color 0.15s; }
+        .ff-notice-link:hover { color: var(--ff-gold-bright); }
+        .ff-notice-date { color: #6b5f56; font-size: 9.5pt; }
 
-        /* [4] 배너 화면 전용 스타일 */
+        /* [5] 배너 화면 전용 스타일 추가 */
         .ff-profile-section { background: #1b1817; border: 2px solid var(--ff-dark-border); border-radius: 6px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); text-align: center; }
         .ff-section-label { color: var(--ff-gold-bright); font-size: 13pt; font-weight: bold; margin-bottom: 20px; letter-spacing: 1px; }
         .ff-profile-row { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; }
-        .ff-profile-circle-btn { position: relative; width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--ff-gold); padding: 4px; background: #0d0b0a; cursor: pointer; transition: all 0.25s cubic-bezier(0.1, 0.8, 0.2, 1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .ff-profile-circle-btn { position: relative; width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--ff-gold); padding: 4px; background: #0d0b0a; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         .ff-profile-circle-btn img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #262220; }
-        .ff-profile-circle-btn:hover { transform: translateY(-5px) scale(1.05); border-color: var(--ff-gold-bright); filter: drop-shadow(0 0 12px rgba(229,198,135,0.5)); }
+        .ff-profile-circle-btn:hover { transform: translateY(-5px); border-color: var(--ff-gold-bright); }
         
         .ff-divider { position: relative; height: 20px; display: flex; justify-content: center; align-items: center; margin: 45px 0; }
         .ff-divider::before { content: ""; position: absolute; width: 100%; height: 1px; background: linear-gradient(90deg, transparent 0%, var(--ff-dark-border) 20%, var(--ff-dark-border) 80%, transparent 100%); }
         .ff-divider::after { content: "❖"; color: var(--ff-gold-dark); font-size: 11pt; background: #151211; padding: 0 20px; z-index: 1; }
-
         .ff-banner-board { background: #1b1817; border: 2px solid var(--ff-dark-border); border-radius: 6px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
-        .ff-link-banner { display: block; width: 200px; height: 40px; border: 1px solid var(--ff-dark-border); border-radius: 4px; overflow: hidden; background-color: #0b0909; transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 3px 6px rgba(0,0,0,0.4); }
+        .ff-link-banner { display: block; width: 200px; height: 40px; border: 1px solid var(--ff-dark-border); border-radius: 4px; overflow: hidden; background-color: #0b0909; transition: all 0.2s; box-shadow: 0 3px 6px rgba(0,0,0,0.4); }
         .ff-link-banner img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.85; }
-        .ff-link-banner:hover { border-color: var(--ff-gold-bright); transform: translateY(-2px); filter: drop-shadow(0 4px 8px rgba(198,161,82,0.3)); }
-        
-        .ff-main-banner-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; }
-        .ff-copy-action-btn { background: linear-gradient(180deg, #443c37 0%, #292421 100%); border: 1px solid var(--ff-dark-border); color: #dfdfdf; padding: 8px 14px; font-family: inherit; font-size: 9pt; font-weight: bold; border-radius: 4px; cursor: pointer; transition: all 0.15s; height: 40px; display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .ff-copy-action-btn:hover { border-color: var(--ff-gold); color: var(--ff-gold-bright); background: #38312d; transform: translateY(-1px); }
-        
-        .ff-official-sub-row { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; width: 100%; }
+        .ff-link-banner:hover { border-color: var(--ff-gold-bright); transform: translateY(-2px); }
         .ff-alliance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; justify-items: center; }
 
-        /* [5] 하단 고정 오케스트리온 플레이어 바 */
+        /* [6] 하단 고정 오케스트리온 플레이어 바 */
         .ff-footer-player { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, #221d1b 0%, #141110 100%); border-top: 2px solid var(--ff-gold); box-shadow: 0 -4px 15px rgba(0,0,0,0.6); z-index: 1000; }
         .ff-player-main { height: 60px; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
         .ff-bgm-info { color: var(--ff-gold); font-size: 10pt; font-weight: bold; }
@@ -104,14 +107,14 @@
         .ff-track-item.current { color: var(--ff-gold-bright); background: rgba(198, 161, 82, 0.08); font-weight: bold; }
         .ff-track-item.current::before { content: "▶ "; color: var(--ff-gold-bright); }
 
-        /* [6] 우측 하단 플로팅 메뉴 단추 셋 */
+        /* [7] 우측 하단 플로팅 메뉴 단추 셋 */
         .ff-floating-menu { position: fixed; bottom: 85px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 1001; }
         .ff-floating-btn { width: 48px; height: 48px; border-radius: 4px; background-size: contain; background-position: center; background-repeat: no-repeat; cursor: pointer; border: 2px solid #3a322d; background-color: #1b1817; transition: all 0.2s; }
         .ff-floating-btn:hover { transform: translateY(-3px) scale(1.05); border-color: var(--ff-gold); }
         .ff-btn-letter { background-image: url('https://ffxiv.gamerescape.com/w/images/e/e6/MainIcon45.png'); }
         .ff-btn-guestbook { background-image: url('https://ffxiv.gamerescape.com/w/images/d/de/MainIcon79.png'); }
 
-        /* [7] 모달 시스템 공통 스타일 */
+        /* [8] 모달 시스템 공통 스타일 */
         .ff-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
         .ff-modal-overlay.show { display: flex; }
         .ff-sysmail-window { background-color: var(--ff-light-bg); border: 3px solid var(--ff-light-border); border-radius: 8px; width: 100%; max-width: 480px; color: var(--ff-text-dark); box-shadow: inset 0 0 15px rgba(0,0,0,0.1), 0 15px 35px rgba(0,0,0,0.6); padding: 20px 25px 25px 25px; position: relative; animation: questPop 0.22s cubic-bezier(0.1, 0.8, 0.3, 1); }
@@ -217,7 +220,7 @@
                             <span class="ff-guestbook-name">림사 모험가</span>
                             <span class="ff-guestbook-date">2026.06.17 11:21</span>
                         </div>
-                        <div class="ff-guestbook-msg">배너 전용 서판 링크들이 아주 깔끔하고 반듯하게 맞춰졌네요쿠포! 200x40 핏이 정갈합니다.</div>
+                        <div class="ff-guestbook-msg">방명록 남기고 갑니다. 아카이브 구축이 아주 멋지네요! 이슈가르드 스크린샷 배너가 인상적입니다.</div>
                     </div>
                 </div>
             </div>
@@ -231,82 +234,104 @@
 
     <script>
         /* =========================================================================
-         * [SPA 코어 엔진] 각 서판 화면 데이터 정의
+         * [SPA 코어 엔진] 각 화면의 HTML 템플릿 정의 구역
          * ========================================================================= */
         const pageTemplates = {
-            // 1. ★ 피드백 반영: 정통 손그림 2단 구조 양식 홈화면 원상복구
+            // 1. 요청하신 상단 이미지 슬라이드 + 하단 공지사항 대시보드 레이아웃 구조 복구
             home: `
-                <div class="ff-home-layout">
-                    <div class="ff-home-main-cols">
-                        <section class="ff-vertical-board">
-                            <div class="ff-board-title">GALLERY SNAPSHOT</div>
-                            <div class="ff-long-slot"><img src="images/test1.png" alt="갤러리 슬롯 1"></div>
-                            <div class="ff-long-slot"><img src="images/gallery_thumb2.png" alt="갤러리 슬롯 2"></div>
-                        </section>
-                        <section class="ff-vertical-board">
-                            <div class="ff-board-title">BACKUP ARCHIVE</div>
-                            <div class="ff-long-slot"><img src="images/backup_thumb1.png" alt="백업 슬롯 1"></div>
-                            <div class="ff-long-slot"><img src="images/backup_thumb2.png" alt="백업 슬롯 2"></div>
-                        </section>
-                    </div>
+                <div class="ff-slider-container">
+                    <button class="ff-slider-arrow ff-arrow-prev" onclick="moveSlide(-1)">◀</button>
+                    <button class="ff-slider-arrow ff-arrow-next" onclick="moveSlide(1)">▶</button>
                     
-                    <aside class="ff-home-side-panel">
-                        <div class="ff-board-title">NOTICE BOARD</div>
-                        <ul class="ff-notice-list">
-                            <li><span>아카이브 통합 서버 점검 안내</span><span class="ff-notice-date">06.19</span></li>
-                            <li><span>티스토리 스킨 레이아웃 버그 수정</span><span class="ff-notice-date">06.12</span></li>
-                            <li><span>모그레터 정기 배송 안내의 건</span><span class="ff-notice-date">05.26</span></li>
-                            <li><span>신대륙 탐험 기록 보관소 오픈</span><span class="ff-notice-date">05.11</span></li>
-                        </ul>
-                    </aside>
+                    <div class="ff-slider-wrapper" id="sliderWrapper">
+                        <div class="ff-slide">
+                            <a href="https://dawnsplash.naru.pub" target="_blank" class="ff-slide-link">
+                                <img src="https://dawnsplash.naru.pub/image/dawn_splash%20(1).gif" alt="새벽의 전장 배너">
+                                <div class="ff-banner-overlay">
+                                    <h3 class="ff-banner-caption-main">Dawn Splash ✦ 링크 연결 단추</h3>
+                                    <p class="ff-banner-caption-sub">클릭하면 해당 연동 보관소 사이트로 안전하게 이동합니다쿠포!</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="ff-slide">
+                            <div class="ff-slide-link">
+                                <img src="https://via.placeholder.com/1000x380/262220/c6a152?text=Screenshot+02" alt="스샷 2">
+                                <div class="ff-banner-overlay">
+                                    <h3 class="ff-banner-caption-main">홍련의 노을, 쿠가네 망루 지붕 위</h3>
+                                    <p class="ff-banner-caption-sub">험난한 등반 수수께끼를 끝내고 찍은 베스트 스냅숏</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ff-slide">
+                            <div class="ff-slide-link">
+                                <img src="https://via.placeholder.com/1000x380/141211/c6a152?text=Screenshot+03" alt="스샷 3">
+                                <div class="ff-banner-overlay">
+                                    <h3 class="ff-banner-caption-main">칠흑의 밤하늘, 라케티카 대삼림</h3>
+                                    <p class="ff-banner-caption-sub">밤의 어둠을 되찾은 직후의 웅장한 숲 전경</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ff-slider-dots" id="sliderDots">
+                        <div class="ff-dot active" onclick="goToSlide(0)"></div>
+                        <div class="ff-dot" onclick="goToSlide(1)"></div>
+                        <div class="ff-dot" onclick="goToSlide(2)"></div>
+                    </div>
                 </div>
+
+                <main class="ff-dashboard-card">
+                    <h2 class="ff-card-title">📜 최근 아카이브 업데이트 소식</h2>
+                    <ul class="ff-notice-list">
+                        <li>
+                            <span class="ff-notice-link">[업데이트] 자작 캐릭터 프로필 말풍선 대사 출력 시스템 구축 완료</span>
+                            <span class="ff-notice-date">2026.06.17</span>
+                        </li>
+                        <li>
+                            <span class="ff-notice-link">[기능 개선] 인게임 퀘스트 완료 창 스타일 전면 레이아웃 복원 및 알약형 확인 버튼 배치</span>
+                            <span class="ff-notice-date">2026.06.17</span>
+                        </li>
+                        <li>
+                            <span class="ff-notice-link">[시스템] 오케스트리온 BGM 복합 플레이리스트 백업 모듈 정상 연동 테스트</span>
+                            <span class="ff-notice-date">2026.06.16</span>
+                        </li>
+                    </ul>
+                </main>
             `,
             
-            // 2. 링크 복사 기능 장착 배너 서판
+            // 2. 배너 관리 전용 서판 화면
             banner: `
                 <section class="ff-profile-section">
                     <div class="ff-section-label">✦ ARCHIVE ADVENTURER PROFILES ✦</div>
                     <div class="ff-profile-row">
-                        <div class="ff-profile-circle-btn"><img src="images/profile_c1.png" alt="캐릭터 1"></div>
-                        <div class="ff-profile-circle-btn"><img src="images/profile_c2.png" alt="캐릭터 2"></div>
-                        <div class="ff-profile-circle-btn"><img src="images/profile_c3.png" alt="캐릭터 3"></div>
-                        <div class="ff-profile-circle-btn"><img src="images/profile_c4.png" alt="캐릭터 4"></div>
-                    </div>
-                </section>
-
-                <div class="ff-divider"></div>
-
-                <section class="ff-banner-board" style="margin-bottom: 25px;">
-                    <div class="ff-section-label" style="font-size:11pt; text-align:left; margin-bottom:15px;">🌐 OFFICIAL HOMEPAGE BANNERS</div>
-                    <div class="ff-main-banner-container">
-                        <a href="https://ff14.co.kr" target="_blank" class="ff-link-banner" id="mainBanner">
-                            <img src="images/banner_official.png" alt="메인 공식 배너">
-                        </a>
-                        <button class="ff-copy-action-btn" onclick="copyData('img')">📋 이미지 링크 복사</button>
-                        <button class="ff-copy-action-btn" onclick="copyData('url')">🔗 웹 주소 복사</button>
-                    </div>
-                    <div class="ff-official-sub-row">
-                        <a href="https://kr.finalfantasyxiv.com/lodestone/" target="_blank" class="ff-link-banner"><img src="images/banner_lodestone_kr.png" alt="공식 배너 2"></a>
-                        <a href="https://na.finalfantasyxiv.com/lodestone/" target="_blank" class="ff-link-banner"><img src="images/banner_lodestone_gl.png" alt="공식 배너 3"></a>
+                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/150" alt="캐릭터 1"></div>
+                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/150" alt="캐릭터 2"></div>
+                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/150" alt="캐릭터 3"></div>
+                        <div class="ff-profile-circle-btn"><img src="https://via.placeholder.com/150" alt="캐릭터 4"></div>
                     </div>
                 </section>
 
                 <div class="ff-divider"></div>
 
                 <section class="ff-banner-board">
-                    <div class="ff-section-label" style="font-size:11pt; text-align:left; margin-bottom:15px;">🤝 ALLIANCE & PERSONAL BANNERS</div>
+                    <div class="ff-section-label" style="font-size:11pt; text-align:left; margin-bottom:15px;">🤝 ALLIANCE BANNERS (200x40 픽셀)</div>
                     <div class="ff-alliance-grid">
-                        <a href="https://notion.so" target="_blank" class="ff-link-banner"><img src="images/banner_notion.png" alt="기타 1"></a>
-                        <a href="https://tistory.com" target="_blank" class="ff-link-banner"><img src="images/banner_tistory.png" alt="기타 2"></a>
-                        <a href="#" class="ff-link-banner" onclick="return false;"><img src="images/banner_friend_a.png" alt="기타 3"></a>
-                        <a href="#" class="ff-link-banner" onclick="return false;"><img src="images/banner_friend_b.png" alt="기타 4"></a>
+                        <a href="https://notion.so" target="_blank" class="ff-link-banner"><img src="https://via.placeholder.com/200x40/0b0909/c6a152?text=Notion+Archive" alt="연동 배너 1"></a>
+                        <a href="https://tistory.com" target="_blank" class="ff-link-banner"><img src="https://via.placeholder.com/200x40/0b0909/c6a152?text=Tistory+Blog" alt="연동 배너 2"></a>
                     </div>
                 </section>
             `
         };
 
-        // [SPA 라우팅 제어 함수]
+        // [SPA 라우팅 및 엔진 스크립트]
+        let currentSlide = 0;
+        const totalSlides = 3;
+        let autoSlideTimer = null;
+
         function navigateTo(pageId) {
+            // 자동 슬라이더 타이머 초기화 (홈 화면 이동 시 재시작을 위해)
+            if (autoSlideTimer) { clearInterval(autoSlideTimer); autoSlideTimer = null; }
+
             document.getElementById('ff-dynamic-container').innerHTML = pageTemplates[pageId];
             document.getElementById('ff-page-main-title').innerText = pageId === 'home' ? "EORZEA CHRONICLE ARCHIVE" : "COLLECTED LINKSHELL BANNERS";
 
@@ -314,30 +339,61 @@
             const activeMenu = document.getElementById(`menu-${pageId}`);
             if (activeMenu) activeMenu.classList.add('active');
 
+            // 홈 화면으로 전환되었을 때만 슬라이더 바인딩 및 자동 롤링 활성화
+            if (pageId === 'home') {
+                currentSlide = 0;
+                initSliderTimer();
+            }
+
             const sidebar = document.getElementById('sidebar');
             if (sidebar.classList.contains('open')) toggleSidebar();
         }
 
         window.addEventListener('DOMContentLoaded', () => { navigateTo('home'); });
 
-        // [배너 복사 유틸 기능]
-        function copyData(type) {
-            const bannerElement = document.getElementById('mainBanner');
-            let copyText = type === 'img' ? bannerElement.querySelector('img').src : bannerElement.href;
-
-            if (copyText) {
-                navigator.clipboard.writeText(copyText).then(() => {
-                    alert(`[에오르제아 통신망] 복사가 완료되었습니다쿠포!`);
-                }).catch(() => alert("복사 실패쿠포. 브라우저 설정을 확인해주세요."));
-            }
-        }
-
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebarMask').classList.toggle('show');
         }
 
-        // 오케스트리온 제어 로직
+        /* =========================================================================
+         * [슬라이더 기능 제어 코어]
+         * ========================================================================= */
+        function updateSliderUI() {
+            const wrapper = document.getElementById('sliderWrapper');
+            const dots = document.querySelectorAll('.ff-dot');
+            if (!wrapper) return;
+            
+            wrapper.style.transform = "translateX(-" + (currentSlide * 100) + "%)";
+            dots.forEach((dot, idx) => {
+                if(idx === currentSlide) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+        }
+
+        function moveSlide(direction) {
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            updateSliderUI();
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateSliderUI();
+        }
+
+        function initSliderTimer() {
+            autoSlideTimer = setInterval(() => moveSlide(1), 5000);
+            const container = document.querySelector('.ff-slider-container');
+            if (container) {
+                container.addEventListener('mouseenter', () => clearInterval(autoSlideTimer));
+                container.addEventListener('mouseleave', () => {
+                    clearInterval(autoSlideTimer);
+                    autoSlideTimer = setInterval(() => moveSlide(1), 5000);
+                });
+            }
+        }
+
+        // 오케스트리온 제어 스크립트
         let isPlaying = false; let currentIdx = 0;
         const tracks = [ {title: "Night in the Brume", sub: "- Ishgard Theme"}, {title: "Answers", sub: "- A Realm Reborn Theme"}, {title: "Tomorrow and Tomorrow", sub: "- Shadowbringers Theme"} ];
         function togglePlaylist() { document.getElementById('playlistPanel').classList.toggle('show'); document.getElementById('listToggleBtn').classList.toggle('active'); }
@@ -354,12 +410,10 @@
         function openModal(modalId) { document.getElementById(modalId).classList.add('show'); }
         function closeModal(modalId) { document.getElementById(modalId).classList.remove('show'); }
 
-        // 모그레터 편지 데이터 풀
+        // 모그레터 랜덤 편지 수납함
         const lettersPool = [
-            { title: "[시스템 메일] 링크쉘 동기화 알림", body: "배너 페이지가 성공적으로 동기화되었습니다쿠포! 손그림 양식에 맞추어 상단 4개의 프로필 원형 아이콘과 하단 200x40 배너 규격이 완벽하게 정리되었습니다.", sender: "아카이브 관리위원회" },
-            { title: "[집사 수행 보고] 기적적인 전리품", body: "주인님! 이번 조달 수행을 통해 무려 '이슈가르드식 대형 석조 벽돌 벽'을 완벽하게 통째로 뜯어왔습니다! 마음에 드셨으면 좋겠습니다. 다음 수행을 위해서 집사 급료 1개를 주머니에 챙겨주세요.", sender: "성실한 레벨 90 집사" },
-            { title: "[급보] 영웅 난이도 공대 지각 사유서", body: "공대장님 죄송합니다! 금일 마물 런에 참여했다가 하우징 구역 에테라이트에서 캐릭터가 끼어버리는 초유의 사태가 발생하여 탈출 기능을 쓰느라 10분 정도 지각할 것 같습니다! 먼저 전반부 조율을 진행해 주세요!", sender: "방패를 든 나이트 공대원" },
-            { title: "새해 복 많이 받으라쿠포!", body: "동방의 힌가시 지역에서 건너온 축하 서신입니다. 별빛 축제 기간 동안 모험가님이 에오르제아에 베푼 은혜에 보답하고자 비밀 선물을 동봉하려 했으나... 배달 가방이 무거워 마음만 먼저 보냅니다쿠포!", sender: "수석 배달부 모그리" }
+            { title: "[시스템 메일] 아카이브 동기화 알림", body: "Eorzea Chronicle Archive 시스템이 정상 구동 중입니다. 상단 이미지 배너의 하이퍼링크 모듈이 완전하게 안착되었습니다쿠포!", sender: "아카이브 관리위원회" },
+            { title: "[집사 수행 보고] 기적적인 전리품", body: "주인님! 이번 조달 수행을 통해 무려 '이슈가르드식 대형 석조 벽돌 벽'을 완벽하게 통째로 뜯어왔습니다! 마음에 드셨으면 좋겠습니다.", sender: "성실한 레벨 90 집사" }
         ];
         function openLetterModal() {
             const letter = lettersPool[Math.floor(Math.random() * lettersPool.length)];
