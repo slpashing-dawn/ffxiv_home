@@ -498,6 +498,7 @@
         let currentIdx = 0;
         let repeatMode = "all";
         let player = null;
+        let hasStarted = false;
 
         // ★ [곡수 제한 무제한!] 여기에 형식에 맞춰서 유튜브 ID와 제목을 계속 추가하시면 됩니다쿠포!
         const tracks = [ 
@@ -551,19 +552,24 @@
         // 재생/일시정지 토글 기능 구현
         function togglePlay() {
             if(!player) return;
-            const playBtn =
+            const playBtn = 
                 document.getElementById('playBtn');
-                if(isPlaying){
-                    player.pauseVideo();
-                    playBtn.innerText = "PLAY";
-                    isPlaying = false;
-                } else {
+            if(isPlaying){
+                player.pauseVideo();
+                playBtn.innerText = "PLAY";
+                isPlaying = false;
+            } else {
+                if(!hasStarted){
                     player.loadVideoById(
                         tracks[currentIdx].ytId
                     );
-                    playBtn.innerText = "PAUSE";
-                    isPlaying = true;
+                    hasStarted = true;
+                } else {
+                    player.playVideo();
                 }
+                playBtn.innerText = "PAUSE";
+                isPlaying = true;
+            }
         }
 
         // 화면 텍스트 및 선택 하이라이트 업데이트
@@ -601,7 +607,7 @@
 
         function playNext() { currentIdx = (currentIdx + 1) % tracks.length; updateTrackUI(); }
         function playPrev() { currentIdx = (currentIdx - 1 + tracks.length) % tracks.length; updateTrackUI(); }
-        function selectTrack(idx) { currentIdx = idx; updateTrackUI(); }
+        function selectTrack(idx) { currentIdx = idx; hasSTarted = true; updateTrackUI(); } //hasstarted
 
         // 모그레터 랜덤 편지 수납함
         const lettersPool = [
