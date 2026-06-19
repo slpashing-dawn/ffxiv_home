@@ -162,6 +162,39 @@
         
         @keyframes fadeInContent { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes questPop { from { transform: scale(0.93); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        /* ✦ [추가됨] 📱 모바일 반응형 자동 맞춤 CSS */
+        @media screen and (max-width: 768px) {
+            body { font-size: 10.5pt; padding-bottom: 120px; }
+            .ff-wrapper { padding: 0 20px; margin: 20px auto; } /* 좌측 여백(100px) 해제하여 화면 중앙 정렬 */
+            
+            /* 메인 슬라이드 배너 높이 조절 */
+            .ff-slider-container { height: 250px; }
+            .ff-banner-overlay { padding: 15px 20px; }
+            .ff-banner-caption-main { font-size: 12pt; }
+            
+            /* 배너 화면 (캐릭터 프로필 동그라미 유연하게 배치) */
+            .ff-profile-row { gap: 15px; }
+            .ff-profile-circle-btn { width: 65px; height: 65px; }
+            
+            /* 배너 화면 (배너 목록 2열 정렬 및 세로 비율 고정) */
+            .ff-alliance-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .ff-link-banner { width: 100%; height: auto; aspect-ratio: 5/1; }
+            
+            /* 팝업 모달 크기 꽉 차게 설정 */
+            .ff-sysmail-window, .ff-guestbook-window { width: 92%; max-width: none; padding: 15px; margin: 0 auto; }
+            .ff-guestbook-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .ff-guestbook-list { max-height: 280px; }
+            
+            /* 오케스트리온 하단 플레이어 세로 모드 배열 */
+            .ff-footer-player { height: auto; padding: 15px; }
+            .ff-player-main { flex-direction: column; gap: 10px; padding: 0; }
+            .ff-player-controls { width: 100%; justify-content: center; flex-wrap: wrap; gap: 10px; }
+            .ff-playlist-panel { bottom: 120px; padding: 15px; max-height: 250px; }
+            
+            /* 플로팅 메뉴 버튼 크기 및 위치 조정 (엄지 터치 최적화) */
+            .ff-floating-menu { bottom: 130px; right: 15px; gap: 10px; }
+            .ff-floating-btn { width: 42px; height: 42px; background-size: 65%; }
+        }
     </style>
 </head>
 <body>
