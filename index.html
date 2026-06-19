@@ -263,6 +263,16 @@
     </div>
 
     <script>
+                // 모그레터 랜덤 편지 수납함
+        const lettersPool = [
+            { title: "[시스템 메일] 아카이브 동기화 알림", body: "Eorzea Chronicle Archive 시스템이 정상 구동 중입니다. 링크쉘 배너 서판의 200x40 규격 제휴 슬롯에 데이터가 성공적으로 바인딩되었습니다쿠포!", sender: "아카이브 관리위원회" },
+            { title: "[집사 수행 보고] 기적적인 전리품", body: "주인님! 이번 조달 수행을 통해 무려 '이슈가르드식 대형 석조 벽돌 벽'을 완벽하게 통째로 뜯어왔습니다! 마음에 드셨으면 좋겠습니다.", sender: "성실한 레벨 90 집사" }
+        ];
+        function openLetterModal() {
+            const letter = lettersPool[Math.floor(Math.random() * lettersPool.length)];
+            document.getElementById('letterContentTarget').innerHTML = `<p><strong>${letter.title}</strong></p><p>${letter.body}</p><p style="text-align:right;">- ${letter.sender}</p>`;
+            openModal('letterModal');
+        }
         // [★ 복사 액션 제어 엔진 함수 이식]
         function copyData(type) {
             const bannerElement = document.getElementById('mainBanner');
@@ -437,12 +447,8 @@
         window.addEventListener('DOMContentLoaded', () => { 
             navigateTo('home'); 
             
-            // 1. 오케스트리온 목록 자동 생성 실행
+            오케스트리온 목록 자동 생성 실행
             initPlaylistUI(); 
-            
-            // 2. 모그레터 및 방명록 버튼 먹통 해결 (클릭 이벤트 직접 연결)
-            document.getElementById('openLetterBtn').onclick = openLetterModal;
-            document.getElementById('openGuestbookBtn').onclick = () => openModal('guestbookModal');
         });
 
         function toggleSidebar() {
@@ -579,17 +585,6 @@
         function playNext() { currentIdx = (currentIdx + 1) % tracks.length; updateTrackUI(); }
         function playPrev() { currentIdx = (currentIdx - 1 + tracks.length) % tracks.length; updateTrackUI(); }
         function selectTrack(idx) { currentIdx = idx; updateTrackUI(); }
-
-        // 모그레터 랜덤 편지 수납함
-        const lettersPool = [
-            { title: "[시스템 메일] 아카이브 동기화 알림", body: "Eorzea Chronicle Archive 시스템이 정상 구동 중입니다. 링크쉘 배너 서판의 200x40 규격 제휴 슬롯에 데이터가 성공적으로 바인딩되었습니다쿠포!", sender: "아카이브 관리위원회" },
-            { title: "[집사 수행 보고] 기적적인 전리품", body: "주인님! 이번 조달 수행을 통해 무려 '이슈가르드식 대형 석조 벽돌 벽'을 완벽하게 통째로 뜯어왔습니다! 마음에 드셨으면 좋겠습니다.", sender: "성실한 레벨 90 집사" }
-        ];
-        function openLetterModal() {
-            const letter = lettersPool[Math.floor(Math.random() * lettersPool.length)];
-            document.getElementById('letterContentTarget').innerHTML = `<p><strong>${letter.title}</strong></p><p>${letter.body}</p><p style="text-align:right;">- ${letter.sender}</p>`;
-            openModal('letterModal');
-        }
     </script>
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
