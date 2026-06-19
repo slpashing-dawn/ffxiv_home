@@ -198,7 +198,10 @@
                 <button class="ff-btn" onclick="playNext()">⏭</button>
                 <button class="ff-btn" id="repeatBtn" onclick="toggleRepeat()">REPEAT ALL</button>
                 <button class="ff-btn" id="listToggleBtn" onclick="togglePlaylist()" style="margin-left: 5px;">ORCHESTRION</button>
-                <input type="range" class="ff-volume-slider" min="0" max="1" step="0.1" value="0.5">
+                <input type="range"
+                    id="volumeSlider"
+                    class="ff-volume-slider" min="0" max="100" step="1" value="50"
+                >                
             </div>
         </div>
         <div class="ff-playlist-panel" id="playlistPanel">
@@ -637,17 +640,35 @@
         document.head.appendChild(ytScript);
         window.onYouTubeIframeAPIReady = function () {
             player = new YT.Player('yt-hidden-player', {
-                height: '0',
-                width: '0',
+                height:'0',
+                width:'0',
                 videoId: tracks[0].ytId,
-                playerVars: {
-                    autoplay: 0
+                playerVars:{
+                    autoplay:0
                 },
-                events: {
-                    onStateChange: onPlayerStateChange
+                events:{
+                    onReady:onPlayerReady,
+                    onStateChange:onPlayerStateChange
                 }
             });
         };
+    function onPlayerReady() {
+        const slider =
+            document.getElementById(
+                'volumeSlider'
+            );
+        player.setVolume(
+            Number(slider.value)
+        );
+        slider.addEventListener(
+            'input',
+            function() {
+                player.setVolume(
+                    Number(this.value)
+                );
+            }
+        );
+    }
     function onPlayerStateChange(event) {
         if(event.data === YT.PlayerState.ENDED){
             if(repeatMode === "one"){
