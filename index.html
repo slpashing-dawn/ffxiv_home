@@ -434,7 +434,16 @@
             if (sidebar.classList.contains('open')) toggleSidebar();
         }
 
-        window.addEventListener('DOMContentLoaded', () => { navigateTo('home'); });
+        window.addEventListener('DOMContentLoaded', () => { 
+            navigateTo('home'); 
+            
+            // 1. 오케스트리온 목록 자동 생성 실행
+            initPlaylistUI(); 
+            
+            // 2. 모그레터 및 방명록 버튼 먹통 해결 (클릭 이벤트 직접 연결)
+            document.getElementById('openLetterBtn').onclick = openLetterModal;
+            document.getElementById('openGuestbookBtn').onclick = () => openModal('guestbookModal');
+        });
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -492,14 +501,14 @@
                 ytId: "h4OQDvRBKcE" // 예시: 이슈가르드 밤 테마 유튜브 ID
             }, 
             { 
-                title: "Answers", 
-                sub: "- A Realm Reborn", 
-                ytId: "b96rrbo89BA" // 예시: 신생 Answers 유튜브 ID
+                title: "Your Answer", 
+                sub: "- Hydaelyn Theme", 
+                ytId: "adiURkt4Fv4" // 예시: 신생 Answers 유튜브 ID
             }, 
             { 
                 title: "Tomorrow and Tomorrow", 
                 sub: "- Shadowbringers", 
-                ytId: "8Z0S7V9DbyA" // 예시: 칠흑 테마 유튜브 ID
+                ytId: "CYjGljHzM3A" // 예시: 칠흑 테마 유튜브 ID
             },
             
             { 
@@ -509,7 +518,24 @@
             }
             // { title: "새 곡 제목", sub: "- 부제목", ytId: "유튜브ID" } <-- 이런 식으로 줄바꿈해서 계속 늘릴 수 있어요!
         ];
-
+        
+        // 오케스트리온 목록 자동 생성 함수
+        function initPlaylistUI() {
+            const listContainer = document.querySelector('.ff-track-list');
+            if (!listContainer) return;
+            
+            listContainer.innerHTML = ""; 
+            
+            tracks.forEach((track, idx) => {
+                const li = document.createElement('li');
+                li.className = `ff-track-item ${idx === currentIdx ? 'current' : ''}`;
+                li.onclick = () => selectTrack(idx);
+                
+                const trackNum = String(idx + 1).padStart(2, '0');
+                li.innerHTML = `<span>${trackNum}. ${track.title}</span><span>${track.sub}</span>`;
+                listContainer.appendChild(li);
+            });
+        }
         // 오케스트리온 UI 토글
         function togglePlaylist() { 
             document.getElementById('playlistPanel').classList.toggle('show'); 
