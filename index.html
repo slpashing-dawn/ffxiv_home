@@ -186,10 +186,29 @@
             .ff-guestbook-list { max-height: 280px; }
             
             /* 오케스트리온 하단 플레이어 세로 모드 배열 */
-            .ff-footer-player { height: auto; padding: 15px; }
-            .ff-player-main { flex-direction: column; gap: 10px; padding: 0; }
-            .ff-player-controls { width: 100%; justify-content: center; flex-wrap: wrap; gap: 10px; }
-            .ff-playlist-panel { bottom: 120px; padding: 15px; max-height: 250px; }
+            .ff-footer-player { 
+                height: auto; 
+                padding: 15px; 
+                box-sizing: border-box; /* 패딩으로 인한 전체 폭 늘어남 방지 */
+            }
+            .ff-player-main { 
+                flex-direction: column; 
+                gap: 12px; /* 간격 살짝 넓힘 */
+                padding: 0; 
+                width: 100%;
+            }
+            .ff-player-controls { 
+                width: 100%; 
+                justify-content: center; 
+                flex-wrap: wrap; /* 핵심: 공간 부족 시 줄바꿈 허용 */
+                gap: 8px; /* 위아래, 양옆 버튼 간격 */
+                padding-bottom: 5px; /* 잘림 방지 하단 여백 */
+            }
+            /* 볼륨 슬라이더도 줄바꿈 시 자연스럽게 위치하도록 여백 조정 */
+            .ff-volume-slider {
+                margin: 5px 0; 
+                width: 100px; /* 모바일에서 슬라이더 폭 최적화 */
+            }
             
             /* 플로팅 메뉴 버튼 크기 및 위치 조정 (엄지 터치 최적화) */
             .ff-floating-menu { bottom: 130px; right: 15px; gap: 10px; }
