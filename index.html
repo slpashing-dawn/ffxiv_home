@@ -803,17 +803,12 @@
     }
 }
         // [★] notice 아코디언 토글 핵심 스크립트
-        function toggleNotice(cardId) {
-            const targetCard = document.getElementById(cardId);
-            const isActive = targetCard.classList.contains('active');
-            
-            // 다른 공지글은 다 닫아주는 효과를 추가하려면 아래 주석을 해제하세요.
-            // document.querySelectorAll('.ff-notice-card').forEach(c => c.classList.remove('active'));
-
-            if (isActive) {
-                targetCard.classList.remove('active');
-            } else {
-                targetCard.classList.add('active');
+        function toggleNotice(id){
+            const body=document.getElementById(id);
+        
+            if(body){
+                body.closest('.ff-notice-card')
+                    .classList.toggle('active');
             }
         }
     </script>
