@@ -838,6 +838,9 @@
         const html=await response.text();
         document.getElementById('ff-dynamic-container').innerHTML=html;
         document.getElementById('ff-page-main-title').textContent=title;
+                if(filename === 'backup-content.html'){
+                 renderList(backupData);
+             }
     }catch(error){
         console.error(error);
         document.getElementById('ff-dynamic-container').innerHTML='<div class="ff-dashboard-card">페이지를 불러올 수 없습니다.</div>';
