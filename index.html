@@ -164,7 +164,7 @@
         @keyframes questPop { from { transform: scale(0.93); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         /* ✦ [추가됨] 📱 모바일 반응형 자동 맞춤 CSS */
         @media screen and (max-width: 768px) {
-            body { font-size: 10.5pt; padding-bottom: 160px !important; }
+            body { font-size: 10.5pt; padding-bottom: 120px; }
             .ff-wrapper { padding: 0 20px; margin: 20px auto; } /* 좌측 여백(100px) 해제하여 화면 중앙 정렬 */
             
             /* 메인 슬라이드 배너 높이 조절 */
@@ -185,39 +185,43 @@
             .ff-guestbook-header { flex-direction: column; align-items: flex-start; gap: 10px; }
             .ff-guestbook-list { max-height: 280px; }
             
-            /* [2] 오케스트리온 하단 플레이어 반응형 배열 */
+           /* 오케스트리온 하단 플레이어 모바일 최적화 (가림/겹침 완벽 해결) */
             .ff-footer-player { 
-                height: auto !important; /* 고정 높이 해제 */
-                padding: 12px 10px !important; 
-                box-sizing: border-box;
+                height: auto !important; 
+                padding: 12px 15px !important; 
             }
-            
             .ff-player-main { 
-                flex-direction: column !important; /* 무조건 세로 배열 */
-                align-items: center !important;
+                height: auto !important; /* ★ PC의 60px 고정 높이를 강제로 파괴! (겹침 원인 1 해결) */
+                flex-direction: column !important; 
                 gap: 12px !important; 
-                width: 100%;
+                padding: 0 !important; 
             }
-    
             .ff-player-controls { 
                 width: 100% !important; 
                 justify-content: center !important; 
-                flex-wrap: wrap !important; /* 공간 부족 시 안전하게 줄바꿈 */
-                gap: 10px !important;
+                flex-wrap: wrap !important; /* 두 줄로 예쁘게 넘어가게 */
+                gap: 10px !important; 
             }
-    
-            /* [3] 오케스트리온 모달 내부 글자 겹침 해결 */
-            .ff-orchestrion-modal .ff-modal-content,
-            .ff-orchestrion-list li {
-                height: auto !important; /* 텍스트 길이에 맞춰 높이 자동 조절 */
-                word-break: keep-all !important; /* 단어 단위로 예쁘게 줄바꿈 */
+            .ff-playlist-panel { 
+                /* ★ 버튼을 가리지 않고 오케스트리온 바 '위'로 솟아오르게 위치 변경 (먹통 원인 2 해결) */
+                position: absolute !important; 
+                bottom: 100% !important; 
+                left: 0 !important; 
+                width: 100% !important; 
+                padding: 15px !important; 
+                max-height: 250px !important; 
+                border-top: 2px solid var(--ff-gold) !important;
+                box-sizing: border-box !important;
+                background: #181514 !important;
+            }
+            .ff-volume-slider {
+                width: 90px !important; /* 볼륨 바가 다른 버튼을 밀어내지 않게 최적화 */
+                margin: 5px 0 !important;
             }
             
-            .ff-orchestrion-list li {
-                flex-wrap: wrap !important; /* 곡명과 재생 버튼 등이 겹치지 않게 분리 */
-                padding: 10px !important;
-                gap: 8px !important;
-                line-height: 1.4 !important; /* 줄간격 확보 */
+            /* 플로팅 메뉴 버튼 크기 및 위치 조정 (바가 높아진 만큼 살짝 위로 피양) */
+            .ff-floating-menu { bottom: 140px !important; right: 15px !important; gap: 10px !important; z-index: 1001 !important; }
+            .ff-floating-btn { width: 42px !important; height: 42px !important; background-size: 65% !important; }
         }
     </style>
 </head>
