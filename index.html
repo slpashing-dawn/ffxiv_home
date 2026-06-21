@@ -104,13 +104,15 @@
         
         /* 실제 본문 뷰어 스크롤 박스 (내부 독립 스크롤) */
         .ff-backup-paper { display: none; flex-direction: column; height: 100%; padding: 35px 40px; overflow-y: auto; color: var(--ff-text-dark); }
-        .ff-paper-header { border-bottom: 2px solid rgba(159, 142, 112, 0.4); padding-bottom: 15px; margin-bottom: 25px; flex-shrink: 0; }
+        .ff-paper-header { border-bottom: 2px solid rgba(159, 142, 112, 0.4); padding-bottom: 15px; margin-bottom: 25px; flex-shrink: 0;}
         .ff-paper-category { font-size: 10pt; color: var(--ff-gold-dark); font-weight: bold; margin-bottom: 5px; }
         .ff-paper-title { font-size: 15pt; font-weight: bold; color: #1d1917; margin: 0 0 10px 0; }
         .ff-paper-sub-meta { display: flex; gap: 15px; font-size: 9pt; color: #7c705c; }
         
         /* 텍스트 본문 구역 */
         .ff-paper-body { font-size: 11pt; line-height: 1.8; text-align: justify; color: #211d1c; white-space: pre-wrap; word-break: break-all; padding-bottom: 20px; }
+        #mobileBackBtn{ display:none; }
+    
 
         
         /* [3] 인터랙티브 슬라이드 배너 레이아웃 */
@@ -294,6 +296,39 @@
                 width: 90px !important; /* 볼륨 바가 다른 버튼을 밀어내지 않게 최적화 */
                 margin: 5px 0 !important;
             }
+
+            /* 글로그 백업 페이지 */
+            @media (max-width: 900px){                
+                .ff-journal-container{
+                    display:block;
+                    height:auto;
+                }            
+                .ff-journal-sidebar{
+                    width:100%;
+                    padding-right:0;
+                }            
+                .ff-journal-viewer{
+                    display:none;
+                    margin-top:15px;
+                    height:70vh;
+                }            
+                .ff-journal-viewer.mobile-open{
+                    display:flex;
+                }
+            }
+            @media (max-width:900px){
+                #mobileBackBtn{
+                    display:block;
+                    margin-bottom:12px;
+                    background:#443c37;
+                    border:1px solid #5a5047;
+                    color:#dfdfdf;
+                    padding:6px 12px;
+                    cursor:pointer;
+                    border-radius:4px;
+                }
+            }
+
             
             /* 플로팅 메뉴 버튼 크기 및 위치 조정 (바가 높아진 만큼 살짝 위로 피양) */
             .ff-floating-menu { bottom: 140px !important; right: 15px !important; gap: 10px !important; z-index: 1001 !important; }
@@ -898,6 +933,15 @@
             document.getElementById('paperLen').innerText = "📏 " + item.count;
             document.getElementById('paperBody').innerText = item.body;
             document.getElementById('viewerPaper').scrollTop = 0;
+            if(window.innerWidth <= 900){
+                document
+                    .getElementById('mainViewer')
+                    .classList.add('mobile-open');
+            
+                document
+                    .getElementById('archiveList')
+                    .style.display = 'none';
+            }
         }
 
         // 실시간 필터 시스템
@@ -915,6 +959,14 @@
             renderList(filtered);
             document.getElementById('viewerEmpty').style.display = "flex";
             document.getElementById('viewerPaper').style.display = "none";
+        }
+        function closePaper(){
+            document
+                .getElementById('mainViewer')
+                .classList.remove('mobile-open');
+            document
+                .getElementById('archiveList')
+                .style.display = 'flex';
         }
         
     </script>
