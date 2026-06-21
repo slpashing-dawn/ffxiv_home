@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eorzea Archive - CHARACTER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 기본 레이아웃 및 파판 전용 다크 테마 변수 */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            background-color: #12100e;
+            background-image: radial-gradient(circle, #221d1a 0%, #0d0b0a 100%);
+            color: #dfdfdf;
+            font-family: 'Noto Serif KR', serif;
+            font-size: 11pt; line-height: 1.6;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+        }
+        :root {
+            --ff-gold: #c6a152;
+            --ff-gold-dark: #8c6f34;
+            --ff-gold-bright: #e5c687;
+            --ff-dark-bg: #211d1c;
+            --ff-dark-border: #463e39;
+            --ff-light-bg: #eadeca;
+            --ff-light-border: #9f8e70;
+            --ff-text-dark: #2b2521;
+        }
+
+        /* [1] 플로팅 메뉴 트리거 및 사이드바 서랍 시스템 */
+        .ff-menu-trigger {
+            position: fixed; top: 20px; left: 20px; width: 55px; height: 55px;
+            background-image: url('https://ffxiv.gamerescape.com/w/images/4/41/Mainquest1_Icon.png');
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            cursor: pointer; z-index: 1001; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+            transition: transform 0.2s, filter 0.2s;
+        }
+        .ff-menu-trigger:hover { transform: scale(1.08) rotate(5deg); filter: drop-shadow(0 4px 12px rgba(198,161,82,0.5)); }
+        
+        .ff-sidebar-mask {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(1px); z-index: 1001;
+        }
+        .ff-sidebar-mask.show { display: block; }
+        
+        .ff-sidebar {
+            position: fixed; top: 0; left: -280px; width: 260px; height: 100%;
+            background: linear-gradient(90deg, #1d1917 0%, #13100f 100%);
+            border-right: 2px solid var(--ff-dark-border); box-shadow: 5px 0 25px rgba(0,0,0,0.8);
+            z-index: 1002; padding: 90px 15px 30px 15px;
+            transition: left 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+        .ff-sidebar.open { left: 0; }
+        .ff-sidebar-close { position: absolute; top: 25px; right: 20px; color: #8c8276; font-size: 11pt; cursor: pointer; font-weight: bold; }
+        .ff-sidebar-close:hover { color: var(--ff-gold-bright); }
+
+        .ff-side-menu { list-style: none; padding: 0; margin: 0; }
+        .ff-side-menu li { margin-bottom: 12px; }
+        .ff-side-menu a {
+            display: flex; align-items: center; color: #a89e94; text-decoration: none;
+            padding: 10px 12px; border-radius: 4px; border: 1px solid transparent; font-size: 11pt; font-weight: bold; transition: all 0.2s;
+        }
+        .ff-side-menu a img { width: 26px; height: 26px; margin-right: 15px; transition: transform 0.2s; }
+        .ff-side-menu a:hover { color: #ffffff; background: linear-gradient(90deg, #3d3531 0%, transparent 100%); border-left: 3px solid var(--ff-gold); padding-left: 15px; }
+        .ff-side-menu a:hover img { transform: scale(1.15); }
+        .ff-side-menu a.active { color: var(--ff-gold-bright); background: rgba(198, 161, 82, 0.08); border-left: 3px solid var(--ff-gold-bright); text-shadow: 0 0 5px rgba(229,198,135,0.3); }
+
+        /* [2] 메인 레이아웃 및 모험가 카드 구성 */
+        .ff-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 40px 0 100px; }
+        .ff-page-title { color: var(--ff-gold); font-size: 16pt; border-bottom: 2px solid var(--ff-dark-border); padding-bottom: 10px; margin-bottom: 75px; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; }
+        
+        .ff-char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 35px; }
+        .ff-char-container { position: relative; }
+
+        /* 말풍선 대사 레이어 */
+        .ff-speech-bubble {
+            position: absolute; top: -55px; left: 50%; transform: translateX(-50%) scale(0.95); width: 100%;
+            background-color: var(--ff-light-bg); border: 2px solid var(--ff-light-border); border-radius: 6px;
+            padding: 6px 12px; color: var(--ff-text-dark); font-size: 9.5pt; font-weight: bold; text-align: center;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.5); opacity: 0; pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s cubic-bezier(0.1, 0.8, 0.3, 1); z-index: 10;
+        }
+        .ff-speech-bubble::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); border-width: 6px 6px 0; border-style: solid; border-color: var(--ff-light-border) transparent; display: block; width: 0; }
+        body:not(.modal-open) .ff-char-container:hover .ff-speech-bubble { opacity: 1; transform: translateX(-50%) scale(1); }
+
+        /* 모험가 카드 디자인 */
+        .ff-char-card { 
+            background: linear-gradient(180deg, #2b2521 0%, #171413 100%); 
+            border: 2px solid var(--ff-dark-border); 
+            border-radius: 6px; 
+            padding: 12px; /* 카드 안쪽 프레임 여백 */
+            cursor: pointer; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
+            transition: all 0.2s; 
+            position: relative; 
+        }
+        .ff-char-card:hover { border-color: var(--ff-gold); transform: translateY(-4px); box-shadow: 0 8px 22px rgba(198, 161, 82, 0.2); }
+        
+        .ff-char-header { margin-bottom: 12px; }
+        .ff-char-name { color: #dfdfdf; font-size: 13pt; font-weight: bold; margin-bottom: 4px; text-shadow: 1px 1px 2px #000; letter-spacing: 0.5px; }
+        .ff-char-card:hover .ff-char-name { color: var(--ff-gold-bright); }
+        .ff-char-job { display: flex; align-items: center; gap: 6px; color: var(--ff-gold); font-size: 9pt; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
+        .ff-char-job img { width: 18px; height: 18px; filter: drop-shadow(1px 1px 1px #000); }
+
+        .ff-char-img-holder { 
+            width: 100%; 
+            aspect-ratio: 3 / 4; /* 세로 직사각형 3:4 비율 완벽 고정 */
+            background: #141211; 
+            overflow: hidden; 
+            border: 1px solid var(--ff-dark-border);
+            border-radius: 4px;
+        }
+        .ff-char-img-holder img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; transition: all 0.2s; }
+        .ff-char-card:hover .ff-char-img-holder img { opacity: 1; transform: scale(1.03); }
+
+        /* [3] 인게임 금박 퀘스트 프로필 모달 수락창 재현 */
+        .ff-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(2px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .ff-modal-overlay.show { display: flex; }
+        .ff-quest-window { background-color: var(--ff-light-bg); border: 3px solid var(--ff-light-border); border-radius: 8px; width: 100%; max-width: 470px; color: var(--ff-text-dark); box-shadow: inset 0 0 20px rgba(0,0,0,0.15), 0 15px 40px rgba(0,0,0,0.7); padding: 25px; position: relative; animation: questPop 0.22s cubic-bezier(0.1, 0.8, 0.3, 1); }
+        @keyframes questPop { from { transform: scale(0.93); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .ff-quest-icon-wrap { text-align: center; margin-bottom: 5px; }
+        .ff-quest-icon { font-size: 18pt; color: #b32d14; }
+        .ff-quest-title { text-align: center; font-size: 14pt; font-weight: bold; color: #40352c; margin: 0 0 15px 0; border-bottom: 2px solid rgba(159, 142, 112, 0.4); padding-bottom: 10px; }
+        .ff-quest-illustration { width: 100%; height: 190px; background: #dfd5c4; border: 1px solid rgba(0,0,0,0.15); border-radius: 4px; margin-bottom: 18px; overflow: hidden; }
+        .ff-quest-illustration img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .ff-quest-section { margin-bottom: 14px; }
+        .ff-quest-section-title { font-size: 9.5pt; font-weight: bold; color: #7c6249; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .ff-quest-section-content { font-size: 10.5pt; color: #2b2521; padding-left: 2px; }
+        
+        .ff-quest-btn-zone { margin-top: 25px; text-align: center; }
+        .ff-quest-btn-confirm { background: linear-gradient(180deg, #534a44 0%, #312b28 100%); border: 1px solid #1a1716; outline: 1px solid #6b5f56; color: #e2dcd6; padding: 6px 50px; font-size: 10pt; font-weight: bold; border-radius: 18px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.3); text-shadow: 1px 1px 1px #000; transition: all 0.1s; }
+        .ff-quest-btn-confirm:hover { background: linear-gradient(180deg, #675c55 0%, #3f3733 100%); outline-color: var(--ff-gold); color: #fff; }
+
+        /* [4] 완전 복구형 오케스트리온 BGM 플레이어 (플레이리스트 포함 다크바) */
+        .ff-footer-player { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, #221d1b 0%, #141110 100%); border-top: 2px solid var(--ff-gold); box-shadow: 0 -4px 15px rgba(0,0,0,0.6); z-index: 1000; }
+        .ff-player-main { height: 60px; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+        .ff-bgm-info { color: var(--ff-gold); font-size: 10pt; font-weight: bold; text-shadow: 1px 1px 2px #000; }
+        .ff-bgm-info span { color: #a89e94; font-weight: normal; font-size: 9.5pt; margin-left: 8px; }
+        .ff-player-controls { display: flex; align-items: center; gap: 8px; }
+        
+        .ff-btn { background: linear-gradient(180deg, #534a44 0%, #312b28 100%); border: 1px solid #1a1716; outline: 1px solid #6b5f56; color: #e2dcd6; padding: 4px 16px; font-size: 9pt; font-weight: bold; border-radius: 15px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.4); text-shadow: 1px 1px 2px #000; transition: all 0.1s; }
+        .ff-btn:hover { background: linear-gradient(180deg, #675c55 0%, #3f3733 100%); outline-color: var(--ff-gold); color: #fff; }
+        .ff-btn.active { outline-color: var(--ff-gold-bright); color: var(--ff-gold-bright); background: linear-gradient(180deg, #3d3531 0%, #1a1715 100%); }
+        
+        .ff-volume-slider { -webkit-appearance: none; appearance: none; width: 80px; height: 5px; background: #3e3530; border-radius: 3px; outline: none; margin-left: 10px; }
+        .ff-volume-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--ff-gold-bright); cursor: pointer; }
+
+        .ff-playlist-panel { display: none; background: #181514; border-top: 1px solid var(--ff-dark-border); max-height: 200px; overflow-y: auto; padding: 15px 30px; }
+        .ff-playlist-panel.show { display: block; }
+        .ff-playlist-header { font-size: 9.5pt; color: #8c8276; border-bottom: 1px solid #2d2623; padding-bottom: 5px; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px; }
+        .ff-track-list { list-style: none; padding: 0; margin: 0; }
+        .ff-track-item { padding: 6px 10px; font-size: 9.5pt; color: #a89e94; cursor: pointer; border-radius: 3px; display: flex; justify-content: space-between; }
+        .ff-track-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
+        .ff-track-item.current { color: var(--ff-gold-bright); background: rgba(198, 161, 82, 0.08); font-weight: bold; }
+        .ff-track-item.current::before { content: "▶ "; color: var(--ff-gold-bright); }
+    </style>
+</head>
+<body id="bodyContext">
+
+    <div class="ff-menu-trigger" onclick="toggleSidebar()" title="메뉴 열기"></div>
+    <div class="ff-sidebar-mask" id="sidebarMask" onclick="toggleSidebar()"></div>
+    <nav class="ff-sidebar" id="sidebar">
+        <div class="ff-sidebar-close" onclick="toggleSidebar()">✕ CLOSE</div>
+        <ul class="ff-side-menu">
+            <li><a href="index.html"><img src="https://ffxiv.gamerescape.com/w/images/2/20/MainIcon52.png"> HOME</a></li>
+            <li><a href="character.html" class="active"><img src="https://ffxiv.gamerescape.com/w/images/0/0e/MainIcon1.png"> CHARACTER</a></li>
+            <li><a href="gallery.html"><img src="https://ffxiv.gamerescape.com/w/images/8/84/MainIcon88.png"> GALLERY</a></li>
+            <li><a href="backup.html"><img src="https://ffxiv.gamerescape.com/w/images/f/fb/MainIcon30.png"> BACKUP</a></li>
+            <li><a href="notice.html"><img src="https://ffxiv.gamerescape.com/w/images/8/89/MainIcon5.png"> NOTICE</a></li>
+        </ul>
+    </nav>
+
+    <div class="ff-wrapper">
+        <h1 class="ff-page-title">👥 CHARACTER ARCHIVE</h1>
+        
+        <div class="ff-char-grid">
+            <div class="ff-char-container">
+                <div class="ff-speech-bubble">"걸어온 길은 등불이 되어, 나아갈 길을 비추리니."</div>
+                <div class="ff-char-card" onclick="openQuestModal('자작 캐릭터 A', '여성 / 휴런 / 백마도사', '모험의 시작점부터 함께한 영웅. 온화한 미소 뒤에 묵직한 사명을 짊어지고 있다.')">
+                    <div class="ff-char-header">
+                        <div class="ff-char-name">자작 캐릭터 A</div>
+                        <div class="ff-char-job">
+                            <img src="https://ffxiv.gamerescape.com/w/images/0/0e/MainIcon1.png" alt="WHITE MAGE">
+                            <span>WHITE MAGE</span>
+                        </div>
+                    </div>
+                    <div class="ff-char-img-holder">
+                        <img src="https://via.placeholder.com/300x400/1d1917/c6a152?text=Character+01" alt="캐릭터 전신">
+                    </div>
+                </div>
+            </div>
+
+            <div class="ff-char-container">
+                <div class="ff-speech-bubble">"모든 지식은 기록될 때 비로소 가치를 갖는 법이지."</div>
+                <div class="ff-char-card" onclick="openQuestModal('자작 캐릭터 B', '남성 / 엘젠 / 흑마도사', '이슈가르드 출신의 학자. 역사와 금서 백업 아카이브를 관리하는 괴짜 기사.')">
+                    <div class="ff-char-header">
+                        <div class="ff-char-name">자작 캐릭터 B</div>
+                        <div class="ff-char-job">
+                            <img src="https://ffxiv.gamerescape.com/w/images/0/0e/MainIcon1.png" alt="BLACK MAGE">
+                            <span>BLACK MAGE</span>
+                        </div>
+                    </div>
+                    <div class="ff-char-img-holder">
+                        <img src="https://via.placeholder.com/300x400/262220/c6a152?text=Character+02" alt="캐릭터 전신">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ff-modal-overlay" id="questModal">
+        <div class="ff-quest-window">
+            <div class="ff-quest-icon-wrap"><span class="ff-quest-icon">⚙</span></div>
+            <h2 class="ff-quest-title" id="modalName">프로필 로딩</h2>
+            <div class="ff-quest-illustration">
+                <img src="https://via.placeholder.com/450x200/dfd5c4/40352c?text=Character+Snapshot" id="modalImg">
+            </div>
+            <div class="ff-quest-section">
+                <div class="ff-quest-section-title">🔒 PROFILE STATUS</div>
+                <div class="ff-quest-section-content" id="modalStatus">-</div>
+            </div>
+            <div class="ff-quest-section">
+                <div class="ff-quest-section-title">📖 CHARACTER CHRONICLE</div>
+                <div class="ff-quest-section-content" id="modalDesc">-</div>
+            </div>
+            <div class="ff-quest-btn-zone">
+                <button class="ff-quest-btn-confirm" onclick="closeQuestModal()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="ff-footer-player">
+        <div class="ff-player-main">
+            <div class="ff-bgm-info">
+                🎵 <span id="currentTitle">Night in the Brume</span> <span id="currentSub" style="color:#a89e94; font-weight:normal; font-size:9.5pt; margin-left:8px;">- Ishgard Theme</span>
+            </div>
+            <div class="ff-player-controls">
+                <button class="ff-btn" onclick="playPrev()">⏮</button>
+                <button class="ff-btn" id="playBtn" onclick="togglePlay()">PLAY</button>
+                <button class="ff-btn" onclick="playNext()">⏭</button>
+                <button class="ff-btn" id="listToggleBtn" onclick="togglePlaylist()" style="margin-left: 5px;">ORCHESTRION</button>
+                <input type="range" class="ff-volume-slider" min="0" max="1" step="0.1" value="0.5">
+            </div>
+        </div>
+        <div class="ff-playlist-panel" id="playlistPanel">
+            <div class="ff-playlist-header">ORCHESTRION PLAYLIST</div>
+            <ul class="ff-track-list">
+                <li class="ff-track-item current" onclick="selectTrack(0, 'Night in the Brume', 'Ishgard Theme')"><span>01. Night in the Brume</span><span>[이슈가르드]</span></li>
+                <li class="ff-track-item" onclick="selectTrack(1, 'Answers', 'A Realm Reborn Theme')"><span>02. Answers</span><span>[신생 신화]</span></li>
+                <li class="ff-track-item" onclick="selectTrack(2, 'Tomorrow and Tomorrow', 'Shadowbringers Theme')"><span>03. Tomorrow and Tomorrow</span><span>[칠흑 감성]</span></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        // 사이드바 슬라이딩 토글
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarMask').classList.toggle('show');
+        }
+
+        // 모달창 팝업 제어 (호버 말풍선 강제 억제 포함)
+        function openQuestModal(name, status, desc) {
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalStatus').innerText = status;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('bodyContext').classList.add('modal-open');
+            document.getElementById('questModal').classList.add('show');
+        }
+        function closeQuestModal() {
+            document.getElementById('questModal').classList.remove('show');
+            document.getElementById('bodyContext').classList.remove('modal-open');
+        }
+
+        // 오케스트리온 리스트 기능 전면 복구 및 구동 스크립트
+        let isPlaying = false;
+        let currentIdx = 0;
+        const tracks = [
+            {title: "Night in the Brume", sub: "- Ishgard Theme"},
+            {title: "Answers", sub: "- A Realm Reborn Theme"},
+            {title: "Tomorrow and Tomorrow", sub: "- Shadowbringers Theme"}
+        ];
+        function togglePlaylist() {
+            document.getElementById('playlistPanel').classList.toggle('show');
+            document.getElementById('listToggleBtn').classList.toggle('active');
+        }
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            document.getElementById('playBtn').innerText = isPlaying ? "PAUSE" : "PLAY";
+        }
+        function updateTrackUI() {
+            document.getElementById('currentTitle').innerText = tracks[currentIdx].title;
+            document.getElementById('currentSub').innerText = tracks[currentIdx].sub;
+            const items = document.querySelectorAll('.ff-track-item');
+            items.forEach((item, idx) => {
+                if(idx === currentIdx) item.classList.add('current');
+                else item.classList.remove('current');
+            });
+        }
+        function playNext() { currentIdx = (currentIdx + 1) % tracks.length; updateTrackUI(); }
+        function playPrev() { currentIdx = (currentIdx - 1 + tracks.length) % tracks.length; updateTrackUI(); }
+        function selectTrack(idx) { currentIdx = idx; updateTrackUI(); }
+    </script>
+</body>
+</html>
